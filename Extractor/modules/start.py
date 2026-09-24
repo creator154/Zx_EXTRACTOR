@@ -10,6 +10,9 @@ from Extractor.core.func import subscribe
 # Existing login flow
 from Extractor.modules.pw import pw_login
 
+# WITHOUT LOGIN flow
+from Extractor.modules.freepw import process_pwwp
+
 
 # ============================================================
 # MAIN BUTTONS
@@ -18,19 +21,19 @@ from Extractor.modules.pw import pw_login
 buttons = InlineKeyboardMarkup([
     [
         InlineKeyboardButton(
-            "👨‍💻 DEVELOPER 🇮🇳",
+            "👨‍💻 Developer 🇮🇳",
             url="https://t.me/SUMIT_ZX"
         )
     ],
     [
         InlineKeyboardButton(
-            "🔐 PHYSICS WALLAH LOGIN",
+            "🔐 Physics Wallah Login",
             callback_data="pw_"
         )
     ],
     [
         InlineKeyboardButton(
-            "📖 PHYSICS WALLAH WITHOUT LOGIN ",
+            "📖 Physics Wallah Without Login",
             callback_data="without_login_"
         )
     ]
@@ -87,26 +90,29 @@ async def handle_callback(client: Client, query):
 
     data = query.data
 
-    # --------------------------------------------------------
+    # ========================================================
     # HOME
-    # --------------------------------------------------------
+    # ========================================================
 
     if data == "home_":
 
         await query.answer()
 
-        await query.message.edit_text(
-            script.START_TXT.format(
-                query.from_user.mention
-            ),
-            reply_markup=buttons
-        )
+        try:
+            await query.message.edit_text(
+                script.START_TXT.format(
+                    query.from_user.mention
+                ),
+                reply_markup=buttons
+            )
+        except Exception as e:
+            print(f"Home error: {e}")
 
         return
 
-    # --------------------------------------------------------
+    # ========================================================
     # LOGIN
-    # --------------------------------------------------------
+    # ========================================================
 
     if data == "pw_":
 
@@ -130,34 +136,36 @@ async def handle_callback(client: Client, query):
 
         return
 
-    # --------------------------------------------------------
+    # ========================================================
     # WITHOUT LOGIN
-    # --------------------------------------------------------
+    # ========================================================
 
     if data == "without_login_":
 
         await query.answer()
 
-        without_login_buttons = InlineKeyboardMarkup([
-            [
-                InlineKeyboardButton(
-                    "𝐁𝐀𝐂𝐊",
-                    callback_data="home_"
-                )
-            ]
-        ])
+        try:
 
-        await query.message.edit_text(
-            "📖 <b>WITHOUT LOGIN</b>\n\n"
-            "Please send your authorized/public PDF here.",
-            reply_markup=without_login_buttons
-        )
+            await process_pwwp(
+                app,
+                query.message,
+                query.from_user.id
+            )
+
+        except Exception as e:
+
+            print(f"Without Login error: {e}")
+
+            await query.message.reply_text(
+                "❌ WITHOUT LOGIN process में error आया।\n\n"
+                "Please try again."
+            )
 
         return
 
-    # --------------------------------------------------------
+    # ========================================================
     # UNKNOWN CALLBACK
-    # --------------------------------------------------------
+    # ========================================================
 
     await query.answer(
         "This option is not available.",
