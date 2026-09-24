@@ -7,24 +7,30 @@ from Extractor import app
 from Extractor.core import script
 from Extractor.core.func import subscribe
 
-# Existing authorized login flow
+# Existing login flow
 from Extractor.modules.pw import pw_login
 
 
 # ============================================================
-# MAIN MENU
+# MAIN BUTTONS
 # ============================================================
 
 buttons = InlineKeyboardMarkup([
     [
         InlineKeyboardButton(
-            "🔐 LOGIN",
+            "👨‍💻 Developer 🇮🇳",
+            url="https://t.me/SUMIT_ZX"
+        )
+    ],
+    [
+        InlineKeyboardButton(
+            "🔐 Physics Wallah Login",
             callback_data="pw_"
         )
     ],
     [
         InlineKeyboardButton(
-            "📖 WITHOUT LOGIN",
+            "📖 Physics Wallah Without Login",
             callback_data="without_login_"
         )
     ]
@@ -61,6 +67,7 @@ async def start(_, message):
         )
 
     except Exception as e:
+
         print(f"Error in start command: {e}")
 
         await message.reply_text(
@@ -86,6 +93,8 @@ async def handle_callback(client: Client, query):
 
     if data == "home_":
 
+        await query.answer()
+
         await query.message.edit_text(
             script.START_TXT.format(
                 query.from_user.mention
@@ -93,7 +102,6 @@ async def handle_callback(client: Client, query):
             reply_markup=buttons
         )
 
-        await query.answer()
         return
 
     # --------------------------------------------------------
@@ -105,6 +113,7 @@ async def handle_callback(client: Client, query):
         await query.answer()
 
         try:
+
             await pw_login(
                 app,
                 query.message
@@ -129,19 +138,19 @@ async def handle_callback(client: Client, query):
 
         await query.answer()
 
+        without_login_buttons = InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton(
+                    "𝐁𝐀𝐂𝐊",
+                    callback_data="home_"
+                )
+            ]
+        ])
+
         await query.message.edit_text(
             "📖 <b>WITHOUT LOGIN</b>\n\n"
-            "यह option केवल authorized/public PDF "
-            "content के लिए available है.\n\n"
-            "कृपया अपना authorized PDF भेजें.",
-            reply_markup=InlineKeyboardMarkup([
-                [
-                    InlineKeyboardButton(
-                        "𝐁𝐀𝐂𝐊",
-                        callback_data="home_"
-                    )
-                ]
-            ])
+            "Please send your authorized/public PDF here.",
+            reply_markup=without_login_buttons
         )
 
         return
