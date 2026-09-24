@@ -18,19 +18,19 @@ from Extractor.modules.pw import pw_login
 buttons = InlineKeyboardMarkup([
     [
         InlineKeyboardButton(
-            "👨‍💻 Developer 🇮🇳",
+            "👨‍💻 DEVELOPER 🇮🇳",
             url="https://t.me/SUMIT_ZX"
         )
     ],
     [
         InlineKeyboardButton(
-            "🔐 Physics Wallah Login",
+            "🔐 PHYSICS WALLAH LOGIN",
             callback_data="pw_"
         )
     ],
     [
         InlineKeyboardButton(
-            "📖 Physics Wallah Without Login",
+            "📖 PHYSICS WALLAH WITHOUT LOGIN ",
             callback_data="without_login_"
         )
     ]
